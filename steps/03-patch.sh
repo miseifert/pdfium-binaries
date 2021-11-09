@@ -1,7 +1,7 @@
 #!/bin/bash -eux
 
 PATCHES="$PWD/patches"
-CUSTOMPATCHES="$PWD/own"
+CUSTOMPATCHES="$PWD/custom"
 SOURCE="${PDFium_SOURCE_DIR:-pdfium}"
 OS="${PDFium_TARGET_OS:?}"
 
