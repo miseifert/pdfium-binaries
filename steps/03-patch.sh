@@ -1,6 +1,7 @@
 #!/bin/bash -eux
 
 PATCHES="$PWD/patches"
+CUSTOMPATCHES="$PWD/own"
 SOURCE="${PDFium_SOURCE_DIR:-pdfium}"
 OS="${PDFium_TARGET_OS:?}"
 
@@ -21,5 +22,9 @@ if [ "$OS" == "win" ]; then
   export YEAR VERSION VERSION_CSV
   envsubst < "$PATCHES/resources.rc" > "resources.rc"
 fi
+
+cp "$CUSTOMPATCHES/pdfiumviewer.cpp" "./fpdfsdk/"
+
+git apply -v "$CUSTOMPATCHES/include_pdfiumviewer.patch"
 
 popd

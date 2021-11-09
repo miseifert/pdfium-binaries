@@ -25,4 +25,3 @@ export PATH
 . steps/05-configure.sh
 . steps/06-build.sh
 . steps/07-pack.sh
-. steps/08-test.sh
