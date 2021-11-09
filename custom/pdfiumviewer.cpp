@@ -10,8 +10,8 @@
 
 extern "C"
 {
-	DLLEXPORT void STDCALL FPDF_AddRef();
-	DLLEXPORT void STDCALL FPDF_Release();
+	FPDF_EXPORT void FPDF_CALLCONV FPDF_AddRef();
+	FPDF_EXPORT void FPDF_CALLCONV FPDF_Release();
 }
 
 class RefCounter
@@ -88,15 +88,18 @@ public:
 	}
 };
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wexit-time-destructors"
+#pragma clang diagnostic ignored "-Wglobal-constructors"
 static RefCounter refCounter;
+#pragma clang diagnostic pop
 
-
-DLLEXPORT void STDCALL FPDF_AddRef()
+FPDF_EXPORT void FPDF_CALLCONV FPDF_AddRef()
 {
 	refCounter.AddRef();
 }
 
-DLLEXPORT void STDCALL FPDF_Release()
+FPDF_EXPORT void FPDF_CALLCONV FPDF_Release()
 {
 	refCounter.Release();
 }
