@@ -16,22 +16,18 @@ find_path(PDFium_INCLUDE_DIR
     PATH_SUFFIXES "include"
 )
 
-if(MSVC)
-  if(CMAKE_CL_64)
-    set(PDFium_ARCH x64)
-  else()
-    set(PDFium_ARCH x86)
-  endif()
+set(PDFium_VERSION "#VERSION#")
 
+if(WIN32)
   find_file(PDFium_LIBRARY
         NAMES "pdfium.dll"
         PATHS "${CMAKE_CURRENT_LIST_DIR}"
-        PATH_SUFFIXES "${PDFium_ARCH}/bin")
+        PATH_SUFFIXES "bin")
 
   find_file(PDFium_IMPLIB
         NAMES "pdfium.dll.lib"
         PATHS "${CMAKE_CURRENT_LIST_DIR}"
-        PATH_SUFFIXES "${PDFium_ARCH}/lib")
+        PATH_SUFFIXES "lib")
 
   add_library(pdfium SHARED IMPORTED)
   set_target_properties(pdfium
@@ -43,6 +39,7 @@ if(MSVC)
 
   find_package_handle_standard_args(PDFium
     REQUIRED_VARS PDFium_LIBRARY PDFium_IMPLIB PDFium_INCLUDE_DIR
+    VERSION_VAR PDFium_VERSION
   )
 else()
   find_library(PDFium_LIBRARY
@@ -59,5 +56,6 @@ else()
 
   find_package_handle_standard_args(PDFium
     REQUIRED_VARS PDFium_LIBRARY PDFium_INCLUDE_DIR
+    VERSION_VAR PDFium_VERSION
   )
 endif()

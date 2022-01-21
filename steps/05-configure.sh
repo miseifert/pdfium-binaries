@@ -2,7 +2,7 @@
 
 OS=${PDFium_TARGET_OS:?}
 SOURCE=${PDFium_SOURCE_DIR:-pdfium}
-BUILD=${PDFium_BUILD_DIR:-pdfium/out}
+BUILD=${PDFium_BUILD_DIR:-$SOURCE/out}
 TARGET_CPU=${PDFium_TARGET_CPU:?}
 if [ "${PDFium_V8:-}" == "enabled" ]; then
   ENABLE_V8="true"
@@ -24,23 +24,24 @@ mkdir -p "$BUILD"
   echo "target_os = \"$OS\""
   echo "pdf_enable_v8 = $ENABLE_V8"
   echo "pdf_enable_xfa = $ENABLE_V8"
+  echo "treat_warnings_as_errors = false"
 
   case "$OS" in
-    mac)
-      echo 'mac_deployment_target = "10.11.0"'
+    ios)
+      echo "ios_enable_code_signing = false"
       ;;
     linux)
       echo 'use_custom_libcxx = true'
       ;;
+    mac)
+      echo 'mac_deployment_target = "10.11.0"'
+      ;;
     win)
       echo 'pdf_use_win32_gdi = true'
       ;;
-    android)
-      echo "is_component_build = true"
-      ;;
   esac
 
-) > "$BUILD/args.gn"
+) | sort > "$BUILD/args.gn"
 
 # Generate Ninja files
 pushd "$SOURCE"

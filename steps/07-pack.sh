@@ -1,44 +1,41 @@
 #!/bin/bash -eux
 
 CFG=${CONFIGURATION:-Release}
-V8=${V8:-disabled}
+V8=${PDFium_V8:-disabled}
 OS=${PDFium_TARGET_OS:?}
 CPU=${PDFium_TARGET_CPU:?}
 VERSION=${PDFium_VERSION:-}
+PATCHES="$PWD/patches"
 
-STAGING="$PWD/staging"
 SOURCE=${PDFium_SOURCE_DIR:-pdfium}
 BUILD=${PDFium_BUILD_DIR:-pdfium/out}
 
-if [ "$OS" == "win" ]; then
-  STAGING_BIN="$STAGING/$CPU/bin"
-  STAGING_LIB="$STAGING/$CPU/lib"
-  STAGING_RES="$STAGING/$CPU/res"
-else
-  STAGING_LIB="$STAGING/lib"
-  STAGING_RES="$STAGING/res"
-fi
+STAGING="$PWD/staging"
+STAGING_BIN="$STAGING/bin"
+STAGING_LIB="$STAGING/lib"
+STAGING_RES="$STAGING/res"
 
 mkdir -p "$STAGING"
 mkdir -p "$STAGING_LIB"
 
-cp PDFiumConfig.cmake "$STAGING"
+sed "s/#VERSION#/${VERSION:-0.0.0.0}/" <"$PATCHES/PDFiumConfig.cmake" >"$STAGING/PDFiumConfig.cmake"
+
 cp "$SOURCE/LICENSE" "$STAGING"
 cp "$BUILD/args.gn" "$STAGING"
 cp -R "$SOURCE/public" "$STAGING/include"
 rm -f "$STAGING/include/DEPS"
 rm -f "$STAGING/include/README"
 rm -f "$STAGING/include/PRESUBMIT.py"
+
 case "$OS" in
-  mac)
-    mv "$BUILD/libpdfium.dylib" "$STAGING_LIB"
-    ;;
-  linux)
+  android|linux)
     mv "$BUILD/libpdfium.so" "$STAGING_LIB"
     ;;
-  android)
-    mv "$BUILD/libpdfium.cr.so" "$STAGING_LIB/libpdfium.so"
+
+  mac|ios)
+    mv "$BUILD/libpdfium.dylib" "$STAGING_LIB"
     ;;
+
   win)
     mv "$BUILD/pdfium.dll.lib" "$STAGING_LIB"
     mkdir -p "$STAGING_BIN"

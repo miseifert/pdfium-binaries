@@ -28,8 +28,8 @@ jobs:
       - name: Set environment variables
         run: |
           cat >>$GITHUB_ENV <<END
-          PDFium_V8=${{ matrix.v8 }}
-          PDFium_CONFIGURATION=${{ matrix.cfg }}
+          PDFium_V8=${{ matrix.v8 || 'disabled' }}
+          PDFium_CONFIGURATION=${{ matrix.cfg || 'Release' }}
           PDFium_TARGET_CPU=${{ matrix.target_cpu }}
           PDFium_TARGET_OS=${{ matrix.target_os }}
           PDFium_BRANCH=chromium/4844
@@ -49,7 +49,7 @@ jobs:
       - name: Install (2/2)
         run: steps/04-install-extras.sh
         shell: bash
-      - name: Configure build
+      - name: Configure
         run: steps/05-configure.sh
         shell: bash
       - name: Build
